@@ -1,0 +1,43 @@
+# Configuration file for training of Protein
+# classification model
+
+description: 'Try different networks'
+mode: 'seq'
+model/type: ['mAlexNet', 'AlexNet', 'LeNet5']
+trainer/save_dir: [
+                'train/CNRParkEven/malexnet',
+                'train/CNRParkEven/alexnet',
+                'train/CNRParkEven/lenet5',
+                ]
+
+base:
+    # Configuration file for training of parking lot
+    # classification model
+    train_img_path: '../../datasets/CNRPark-Patches-150x150'
+    train_img_labels: '../../datasets/splits/CNRParkAB/even.txt'
+    test_img_path: '../../datasets/CNRPark-Patches-150x150'
+    test_img_labels: '../../datasets/splits/CNRParkAB/odd.txt'
+
+    batch_size: 64
+
+    optimizer:
+        type: 'SGD'
+        args:
+            lr: 0.01
+            momentum: 0.9
+            weight_decay: 0.0005
+
+    scheduler:
+        step_size: 6
+        gamma: 0.5
+
+    model:
+        args:
+            num_classes: 2
+
+    trainer:
+        save_dir: 'train/CNRParkEven/malexnet'
+        epochs: 18
+        save_period: 3
+        monitor: 'max accuracy'
+        n_gpu: 1
