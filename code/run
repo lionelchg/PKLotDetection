@@ -1,0 +1,10 @@
+#!/usr/bin/bash
+#SBATCH --job-name=PKLotDetection
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=4
+#SBATCH --time=01:00:00
+#SBATCH --partition=gpua30
+#SBATCH --nodelist=krakenngpu02
+#SBATCH --gres=gpu:1
+
+pklot_train -c malexnet.yml
