@@ -13,10 +13,10 @@ trainer/save_dir: [
 base:
     # Configuration file for training of parking lot
     # classification model
-    train_img_path: '../../datasets/CNRPark-Patches-150x150'
-    train_img_labels: '../../datasets/splits/CNRParkAB/even.txt'
-    test_img_path: '../../datasets/CNRPark-Patches-150x150'
-    test_img_labels: '../../datasets/splits/CNRParkAB/odd.txt'
+    train_img_path: '../datasets/CNRPark-Patches-150x150'
+    train_img_labels: '../datasets/splits/CNRParkAB/even.txt'
+    test_img_path: '../datasets/CNRPark-Patches-150x150'
+    test_img_labels: '../datasets/splits/CNRParkAB/odd.txt'
 
     batch_size: 64
 
@@ -28,7 +28,7 @@ base:
             weight_decay: 0.0005
 
     scheduler:
-        step_size: 6
+        step_size: 2
         gamma: 0.5
 
     model:

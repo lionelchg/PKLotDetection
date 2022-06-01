@@ -16,6 +16,25 @@ import yaml
 from .log import create_log
 from .util import MetricTracker
 
+def conditioned_stats(TP, TN, FP, FN):
+    try:
+        TPR = TP / (TP + FN)
+    except ZeroDivisionError:
+        TPR = -1
+    try:
+        TNR = TN / (TN + FP)
+    except ZeroDivisionError:
+        TNR = -1
+    try:
+        PPV = TP / (TP + FP)
+    except ZeroDivisionError:
+        PPV = -1
+    try:
+        NPV = TN / (TN + FN)
+    except ZeroDivisionError:
+        NPV = -1
+    return TPR, TNR, PPV, NPV
+
 class Trainer:
     def __init__(self, model, criterion, optimizer,
                 train_dataloader, valid_dataloader, test_dataloader,
@@ -50,10 +69,10 @@ class Trainer:
             self.model = torch.nn.DataParallel(model, device_ids=device_ids)
 
         # Hold metrics
-        self.train_metrics = MetricTracker('loss', 'accuracy')
-        self.valid_metrics = MetricTracker('loss', 'accuracy')
-        self.df_train_metrics = pd.DataFrame(columns=('loss', 'accuracy'))
-        self.df_valid_metrics = pd.DataFrame(columns=('loss', 'accuracy'))
+        self.train_metrics = MetricTracker('loss', 'accuracy', 'TPR', 'TNR', 'PPV', 'NPV')
+        self.valid_metrics = MetricTracker('loss', 'accuracy', 'TPR', 'TNR', 'PPV', 'NPV')
+        self.df_train_metrics = pd.DataFrame(columns=('loss', 'accuracy', 'TPR', 'TNR', 'PPV', 'NPV'))
+        self.df_valid_metrics = pd.DataFrame(columns=('loss', 'accuracy', 'TPR', 'TNR', 'PPV', 'NPV'))
 
         # Small parameters setting
         self.epochs = self.cfg['epochs']
@@ -79,8 +98,9 @@ class Trainer:
         total_acc, total_count = 0, 0
 
         # Print headers
-        self.logger.info('-' * 59)
-        self.logger.info(f'| {"Epoch":>10} | {"Batches":>13} | {"Accuracy":>10} | {"Loss":<12} |')
+        self.logger.info('-' * 110)
+        self.logger.info(f'| {"Epoch":>10} | {"Batches":>13} | {"Accuracy":>10} '
+            f'| {"TPR":>10} | {"TNR":>10} | {"PPV":>10} | {"NPV":>10} | {"Loss":>12} |')
         for idx, (batch_images, batch_labels) in enumerate(self.train_dataloader):
             # Convert the labels to right format
             batch_labels = list(map(int, batch_labels))
@@ -105,16 +125,27 @@ class Trainer:
             local_count = batch_labels.size(0)
             total_count += local_count
 
+            # Compute conditioned statistics
+            TP = ((predicted_labels.argmax(1) == 1).cpu().detach().numpy() & (batch_labels == 1).cpu().detach().numpy()).sum().item()
+            TN = ((predicted_labels.argmax(1) == 0).cpu().detach().numpy() & (batch_labels == 0).cpu().detach().numpy()).sum().item()
+            FP = ((predicted_labels.argmax(1) == 1).cpu().detach().numpy() & (batch_labels == 0).cpu().detach().numpy()).sum().item()
+            FN = ((predicted_labels.argmax(1) == 0).cpu().detach().numpy() & (batch_labels == 1).cpu().detach().numpy()).sum().item()
+            TPR, TNR, PPV, NPV = conditioned_stats(TP, TN, FP, FN)
+
             # Print info
             if idx % self.log_interval == 0 and idx > 0:
                 self.logger.info('| {:10d} | {:6d}/{:6d} '
-                    '| {:10.3f} | {:12.4e} |'.format(epoch, idx, len(self.train_dataloader),
-                                                total_acc / total_count, loss))
+                    '| {:10.3f} | {:10.3f} | {:10.3f} | {:10.3f} | {:10.3f} | {:12.4e} |'.format(epoch, idx, len(self.train_dataloader),
+                                                total_acc / total_count, TPR, TNR, PPV, NPV, loss))
                 total_acc, total_count = 0, 0
 
             # Update metric trackers
             self.train_metrics.update('loss', loss.item())
             self.train_metrics.update('accuracy', local_acc / local_count)
+            self.train_metrics.update('TPR', TPR)
+            self.train_metrics.update('TNR', TNR)
+            self.train_metrics.update('PPV', PPV)
+            self.train_metrics.update('NPV', PPV)
 
         self.df_train_metrics.loc[epoch] = self.train_metrics._data.average
 
@@ -123,6 +154,7 @@ class Trainer:
         """ Valid method for a given epoch. """
         self.model.eval()
         total_acc, total_count = 0, 0
+        total_TP, total_TN, total_FP, total_FN = 0, 0, 0, 0
 
         with torch.no_grad():
             for idx, (batch_images, batch_labels) in enumerate(self.valid_dataloader):
@@ -146,12 +178,28 @@ class Trainer:
                 local_count = batch_labels.size(0)
                 total_count += local_count
 
+                # Compute conditioned statistics
+                TP = ((predicted_labels.argmax(1) == 1).cpu().detach().numpy() & (batch_labels == 1).cpu().detach().numpy()).sum().item()
+                TN = ((predicted_labels.argmax(1) == 0).cpu().detach().numpy() & (batch_labels == 0).cpu().detach().numpy()).sum().item()
+                FP = ((predicted_labels.argmax(1) == 1).cpu().detach().numpy() & (batch_labels == 0).cpu().detach().numpy()).sum().item()
+                FN = ((predicted_labels.argmax(1) == 0).cpu().detach().numpy() & (batch_labels == 1).cpu().detach().numpy()).sum().item()
+                TPR, TNR, PPV, NPV = conditioned_stats(TP, TN, FP, FN)
+                total_TP += TP
+                total_TN += TN
+                total_FP += FP
+                total_FN += FN
+
                 # Update metric trackers
                 self.valid_metrics.update('loss', loss.item())
                 self.valid_metrics.update('accuracy', local_acc / local_count)
+                self.valid_metrics.update('TPR', TPR)
+                self.valid_metrics.update('TNR', TNR)
+                self.valid_metrics.update('PPV', PPV)
+                self.valid_metrics.update('NPV', NPV)
 
             self.df_valid_metrics.loc[epoch] = self.valid_metrics._data.average
-        return total_acc / total_count
+        TPR, TNR, PPV, NPV = conditioned_stats(total_TP, total_TN, total_FP, total_FN)
+        return total_acc / total_count, TPR, TNR, PPV, NPV
 
     def train(self):
         """ Full training method. """
@@ -164,7 +212,7 @@ class Trainer:
         for epoch in range(1, self.epochs + 1):
             epoch_start_time = time.time()
             self._train_epoch(epoch)
-            accu_val = self._valid_epoch(epoch)
+            accu_val, TPR, TNR, PPV, NPV = self._valid_epoch(epoch)
             if total_accu is not None and total_accu > accu_val:
                 # If accuracy stops to improve we decrease the learning rate
                 self.scheduler.step()
@@ -174,12 +222,14 @@ class Trainer:
                 # Accuracy has improved so we save the model
                 total_accu = accu_val
                 self._save_best(epoch)
-            self.logger.info('-' * 59)
-            self.logger.info('| End of epoch {:3d} | time: {:5.2f}s | '
-                'Valid accuracy: {:8.3f} '.format(epoch,
-                                                time.time() - epoch_start_time,
-                                                accu_val))
-            self.logger.info('-' * 59 + '\n')
+            self.logger.info('-' * 110)
+            self.logger.info('| End of epoch {:3d} | time: {:5.2f}s | '.format(epoch,
+                                                time.time() - epoch_start_time))
+            self.logger.info(f'| {"Accuracy":>10} '
+                f'| {"TPR":>10} | {"TNR":>10} | {"PPV":>10} | {"NPV":>10} |')
+            self.logger.info('| {:10.3f} | {:10.3f} | {:10.3f} | {:10.3f} | {:10.3f} |'.format(
+                        accu_val, TPR, TNR, PPV, NPV))
+            self.logger.info('-' * 110 + '\n')
 
             if epoch % self.save_period == 0:
                 self._save_checkpoint(epoch)
@@ -192,6 +242,7 @@ class Trainer:
         """ Run the model on the test dataset. """
         self.model.eval()
         total_acc, total_count = 0, 0
+        total_TP, total_TN, total_FP, total_FN = 0, 0, 0, 0
 
         with torch.no_grad():
             for _, (batch_images, batch_labels) in enumerate(self.test_dataloader):
@@ -211,10 +262,25 @@ class Trainer:
                 total_acc += local_acc
                 local_count = batch_labels.size(0)
                 total_count += local_count
-            self.logger.info('-' * 59)
-            self.logger.info('| Evaluating network on test dataset. Size: {:6d} | Accuracy: {:12.4e} |'.format(len(self.test_dataloader),
-                                            total_acc / total_count))
-            self.logger.info('-' * 59)
+
+                # Compute conditioned statistics
+                TP = ((predicted_labels.argmax(1) == 1).cpu().detach().numpy() & (batch_labels == 1).cpu().detach().numpy()).sum().item()
+                TN = ((predicted_labels.argmax(1) == 0).cpu().detach().numpy() & (batch_labels == 0).cpu().detach().numpy()).sum().item()
+                FP = ((predicted_labels.argmax(1) == 1).cpu().detach().numpy() & (batch_labels == 0).cpu().detach().numpy()).sum().item()
+                FN = ((predicted_labels.argmax(1) == 0).cpu().detach().numpy() & (batch_labels == 1).cpu().detach().numpy()).sum().item()
+                total_TP += TP
+                total_TN += TN
+                total_FP += FP
+                total_FN += FN
+
+            TPR, TNR, PPV, NPV = conditioned_stats(total_TP, total_TN, total_FP, total_FN)
+            self.logger.info('-' * 110)
+            self.logger.info('| Evaluating network on test dataset. Size: {:6d} '.format(len(self.test_dataloader)))
+            self.logger.info(f'| {"Accuracy":>10} '
+                f'| {"TPR":>10} | {"TNR":>10} | {"PPV":>10} | {"NPV":>10} |')
+            self.logger.info('| {:10.3f} | {:10.3f} | {:10.3f} | {:10.3f} | {:10.3f} |'.format(
+                        total_acc / total_count, TPR, TNR, PPV, NPV))
+            self.logger.info('-' * 110)
 
     def _prepare_device(self, n_gpu_use):
         """ Setup GPU device if available, move model into configured device. """
