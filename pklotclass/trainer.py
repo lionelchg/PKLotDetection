@@ -140,12 +140,13 @@ class Trainer:
                 total_acc, total_count = 0, 0
 
             # Update metric trackers
-            self.train_metrics.update('loss', loss.item())
-            self.train_metrics.update('accuracy', local_acc / local_count)
-            self.train_metrics.update('TPR', TPR)
-            self.train_metrics.update('TNR', TNR)
-            self.train_metrics.update('PPV', PPV)
-            self.train_metrics.update('NPV', PPV)
+            batch_len = len(batch_labels)
+            self.train_metrics.update('loss', loss.item(), batch_len)
+            self.train_metrics.update('accuracy', local_acc / local_count, batch_len)
+            self.train_metrics.update('TPR', TPR, batch_len)
+            self.train_metrics.update('TNR', TNR, batch_len)
+            self.train_metrics.update('PPV', PPV, batch_len)
+            self.train_metrics.update('NPV', PPV, batch_len)
 
         self.df_train_metrics.loc[epoch] = self.train_metrics._data.average
 
@@ -190,12 +191,13 @@ class Trainer:
                 total_FN += FN
 
                 # Update metric trackers
-                self.valid_metrics.update('loss', loss.item())
-                self.valid_metrics.update('accuracy', local_acc / local_count)
-                self.valid_metrics.update('TPR', TPR)
-                self.valid_metrics.update('TNR', TNR)
-                self.valid_metrics.update('PPV', PPV)
-                self.valid_metrics.update('NPV', NPV)
+                batch_len = len(batch_labels)
+                self.valid_metrics.update('loss', loss.item(), batch_len)
+                self.valid_metrics.update('accuracy', local_acc / local_count, batch_len)
+                self.valid_metrics.update('TPR', TPR, batch_len)
+                self.valid_metrics.update('TNR', TNR, batch_len)
+                self.valid_metrics.update('PPV', PPV, batch_len)
+                self.valid_metrics.update('NPV', NPV, batch_len)
 
             self.df_valid_metrics.loc[epoch] = self.valid_metrics._data.average
         TPR, TNR, PPV, NPV = conditioned_stats(total_TP, total_TN, total_FP, total_FN)

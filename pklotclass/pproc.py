@@ -14,7 +14,8 @@ default_cycler = (cycler(color=['mediumblue', 'darkblue', 'firebrick', 'darkred'
 plt.rc('axes', prop_cycle=default_cycler)
 
 label_dict = {'accuracy': 'Accuracy',
-        'loss': '$\mathcal{L}$'}
+        'loss': '$\mathcal{L}$',
+        'TPR': 'TPR', 'TNR': 'TNR', 'PPV': 'PPV', 'NPV': 'NPV'}
 
 def ax_prop(ax, ylabel, logyscale):
     ax.set_xlabel('Epoch')
@@ -47,7 +48,7 @@ def main():
         # Plotting
         for figname in cfg['plot']:
             naxes = len(cfg['plot'][figname])
-            fig, axes = plt.subplots(ncols=naxes, figsize=(5 * naxes, 4))
+            fig, axes = plt.subplots(ncols=naxes, figsize=(5.5 * naxes, 4))
             if naxes == 1:
                 axes = [axes]
             for i_qty, qty in enumerate(cfg['plot'][figname]):
