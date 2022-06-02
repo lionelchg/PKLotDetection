@@ -63,7 +63,7 @@ pip install torch==1.10.1+cu111 -f https://download.pytorch.org/whl/torch_stable
 
 ## Training and evaluation
 
-To reproduce the results shown in the technical report, first download the datasets using the following shell script (you need `wget`):
+To reproduce the results shown in the technical report, first download the datasets in the root of the repository using the following shell script (you need `wget`):
 
 ```shell
 ./get_datasets.sh
@@ -77,10 +77,11 @@ cd code/
 ./eval.sh
 ```
 
-You can skip training and just evaluate the networks by downloading the pre-trained networks at this [link](https://mercure.cerfacs.fr/cfxfile/get.php?c926b48137b2) and then unzip inside the `code/` repository:
+You can skip training and just evaluate the networks by downloading the pre-trained networks at this [link](https://mercure.cerfacs.fr/cfxfile/get.php?c926b48137b2) and then unzip inside the `code/` repository (note that you need a GPU with CUDA to relaunch the models in this case):
 
 ```shell
 unzip train.zip
 ./eval.sh
 ```
 
+Note that the models have been run on an NVIDIA A30 GPU.
