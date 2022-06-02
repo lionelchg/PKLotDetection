@@ -15,14 +15,18 @@ The repository contains several directories:
 The library is written in an object-oriented fashion. The content of each file is described below:
 
 - `dataloader.py`: contains the `ParkingLotDataset` class which overloads the base `Dataset` class from PyTorch and reads parking lot datasets
+- `eval.py`: performs evaluation of a neural network on a test dataset
 - `log.py`: contains functions for creating logging objects
 - `model.py`: contains the neural network architectures. A base class is first written which inherits from the `nn.Module` class of PyTorch. This base class holds a method for computing the number of training parameters and the other three classes inherit from it.
 - `multiple_train.py`: script to launch multiple trainings sequentially
+- `multiple_train.py`: script to launch multiple evaluations sequentially
 - `pproc.py`: routines for post-processing the `metrics.h5` generated during training
 - `predict.py`: script for inference of a given set of images
 - `train.py`: performs the actual training of neural networks
 - `trainer.py`: contains the `Trainer` class instantiated in `train.py`
 - `util.py`: contains common functions used across the library
+
+## Executables
 
 The library is called via executables created in `setup.py`:
 
@@ -45,7 +49,7 @@ To install the library you need Python 3.8 or above version. Run the following c
 pip install -e .
 ```
 
-If there are some missing packages, an image of a working python 3.9 version on Mac can be found in `requirements.txt` and so the following command should be run:
+If there are some missing packages, an image of a working python 3.8 version on Mac can be found in `requirements.txt` and so the following command should be run:
 
 ```shell
 pip install -r requirements.txt
@@ -55,5 +59,28 @@ To run PyTorch on GPUs special versions of PyTorch should be installed with CUDA
 
 ```shell
 pip install torch==1.10.1+cu111 -f https://download.pytorch.org/whl/torch_stable.html
+```
+
+## Training and evaluation
+
+To reproduce the results shown in the technical report, first download the datasets using the following shell script (you need `wget`):
+
+```shell
+./get_datasets.sh
+```
+
+Then for training and evaluation go to the `code/` repository and run the two shell scripts:
+
+```shell
+cd code/
+./train.sh
+./eval.sh
+```
+
+You can skip training and just evaluate the networks by downloading the pre-trained networks at this [link](https://mercure.cerfacs.fr/cfxfile/get.php?c926b48137b2) and then unzip inside the `code/` repository:
+
+```shell
+unzip train.zip
+./eval.sh
 ```
 
