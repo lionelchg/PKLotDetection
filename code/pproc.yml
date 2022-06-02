@@ -1,0 +1,15 @@
+# Configuration file for training/validation
+# post-processing of networks from PlasmaNet
+fig_dir: 'networks/'
+data_dir: 'train/CNRParkEven'
+type: 'valid'
+
+networks:
+    malexnet: 'mAlexNet'
+    alexnet: 'AlexNet'
+    lenet5: 'LeNet5'
+
+plot:
+    loss_acc: ['loss', 'accuracy']
+    true_rates: ['TPR', 'TNR']
+    predictive_values: ['PPV', 'NPV']

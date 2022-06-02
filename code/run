@@ -6,4 +6,5 @@
 #SBATCH --partition=biggpu
 #SBATCH --gres=gpu:1
 
-pklot_train -c malexnet.yml
+# Run training for mAlexNet, AlexNet and LeNet5
+pklot_trains -c networks.yml
