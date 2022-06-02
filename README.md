@@ -1,6 +1,6 @@
 # PKLotDetection repository
 
-This is a repository for classifying parking lot images as empty or occupied. The associated technical report can be found at `latex/report.pdf`.
+This is a repository for classifying parking lot images as empty or occupied. The associated technical report can be found in `report.pdf`.
 
 ## Overview of the repository
 
