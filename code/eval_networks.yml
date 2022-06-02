@@ -5,34 +5,25 @@ description: 'Try different networks'
 mode: 'seq'
 model/type: ['mAlexNet', 'AlexNet', 'LeNet5']
 trainer/save_dir: [
-                'train/CNRParkEven/malexnet',
-                'train/CNRParkEven/malexnet',
-                'train/CNRParkEven/malexnet',
+                'eval/CNRParkEven/malexnet',
+                'eval/CNRParkEven/alexnet',
+                'eval/CNRParkEven/lenet5',
                 ]
+trainer/resume: [
+    'train/CNRParkEven/malexnet/model_best.pth',
+    'train/CNRParkEven/alexnet/model_best.pth',
+    'train/CNRParkEven/lenet5/model_best.pth',
+]
 
 base:
     # Configuration file for training of parking lot
     # classification model
-    train_img_path: '../datasets/CNRPark-Patches-150x150'
-    train_img_labels: '../datasets/splits/CNRParkAB/even.txt'
     test_img_path: '../datasets/CNRPark-Patches-150x150'
     test_img_labels: '../datasets/splits/CNRParkAB/odd.txt'
 
     batch_size: 64
 
-    optimizer:
-        type: 'SGD'
-        args:
-            lr: 0.01
-            momentum: 0.9
-            weight_decay: 0.0005
-
-    scheduler:
-        step_size: 2
-        gamma: 0.5
-
     model:
-        type: 'mAlexNet'
         args:
             num_classes: 2
 

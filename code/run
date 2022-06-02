@@ -6,5 +6,8 @@
 #SBATCH --partition=biggpu
 #SBATCH --gres=gpu:1
 
-# Run training for mAlexNet, AlexNet and LeNet5
-pklot_trains -c networks.yml
+# Run training for mAlexNet, AlexNet and LeNet5 and plot metrics
+./train.sh
+
+# Evaluate the networks
+./eval.sh

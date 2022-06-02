@@ -39,6 +39,8 @@ setup(
         'console_scripts': [
             'pklot_train=pklotclass.train:main',
             'pklot_trains=pklotclass.multiple_train:main',
+            'pklot_eval=pklotclass.eval:main',
+            'pklot_evals=pklotclass.multiple_eval:main',
             'pklot_plot=pklotclass.pproc:main',
             'pklot_predict=pklotclass.predict:main'
         ],

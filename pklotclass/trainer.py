@@ -53,6 +53,7 @@ class Trainer:
         self.scheduler = scheduler
 
         # Create logger for training
+        self.cfg_global = cfg
         self.cfg = cfg['trainer']
         self.save_dir = Path(self.cfg['save_dir'])
         self.save_dir.mkdir(parents=True, exist_ok=True)
@@ -90,7 +91,7 @@ class Trainer:
 
         # Resume training
         if 'resume' in self.cfg:
-            self._resume_checkpoint(cfg['resume'])
+            self._resume_checkpoint(self.cfg['resume'])
 
     def _train_epoch(self, epoch):
         """ Training method for a given epoch. """
@@ -336,19 +337,14 @@ class Trainer:
         checkpoint = torch.load(resume_path)
         self.start_epoch = checkpoint['epoch'] + 1
         self.mnt_best = checkpoint['monitor_best']
-
         # Load architecture params from checkpoint
-        if checkpoint['config']['arch'] != self.config['arch']:
+        if checkpoint['arch'] != self.cfg_global['model']['type']:
             self.logger.warning('Warning: Architecture configuration from the config file and the checkpoint is '
                                 'different. This may yield an exception while state_dict is loaded.')
         self.model.load_state_dict(checkpoint['state_dict'])
 
         # Load optimizer state from checkpoint only if optimizer type is not changed
-        if checkpoint['config']['optimizer']['type'] != self.config['optimizer']['type']:
-            self.logger.warning('Warning: Optimizer type from the config file and the checkpoint is different. '
-                                'Optimizer parameters are not resumed.')
-        else:
-            self.optimizer.load_state_dict(checkpoint['optimizer'])
+        self.optimizer.load_state_dict(checkpoint['optimizer'])
 
         self.logger.info('Checkpoint loaded. Resume training from epoch {}'.format(self.start_epoch))
 
