@@ -1,0 +1,152 @@
+% Commands related to ensembles
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\Ltwo}[1]{\mathcal{L}^2(#1)}
+
+% Intervals
+\newcommand{\intint}[2]{\llbracket #1, #2 \rrbracket}
+
+% Vectors/Tensors and bold symbols
+\newcommand{\ve}[1]{\vb*{#1}}
+\newcommand{\x}{\vb{x}}
+\newcommand{\vr}{\vb{r}}
+\newcommand{\vv}{\vb{v}}
+\newcommand{\kv}{\vb{k}}
+\newcommand{\av}{\vb{a}}
+\newcommand{\U}{\vb{U}}
+\newcommand{\uv}{\vb{u}}
+\newcommand{\er}{\vb{e}_r}
+\newcommand{\et}{\vb{e}_\theta}
+\newcommand{\vt}{\vb{t}}
+\newcommand{\vF}{\vb{F}}
+\newcommand{\ex}{\vb{e}_x}
+
+% Derivatives
+\newcommand{\dtadv}[2]{\frac{\delta #1}{\delta #2}}
+\newcommand{\ut}{\pdv{u}{t}}
+\newcommand{\ux}{\pdv{u}{x}}
+\newcommand{\uxx}{\pdv[2]{u}{x}}
+
+% Operators
+\newcommand{\hf}{\hat{f}}
+\newcommand{\hu}{\hat{u}}
+\newcommand{\e}{\mathrm{e}}
+\newcommand{\ii}{\mathrm{i}}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\I}{\mathrm{I}}
+
+% Capital greek letters not in italic (delta and omega)
+\DeclareMathSymbol{\upD}{\mathalpha}{operators}{1}
+\DeclareMathSymbol{\upP}{\mathalpha}{operators}{5}
+\DeclareMathSymbol{\upS}{\mathalpha}{operators}{6}
+\DeclareMathSymbol{\upO}{\mathalpha}{operators}{10}
+\newcommand{\dt}{\upD t}
+\newcommand{\dx}{\upD x}
+\newcommand{\dy}{\upD y}
+\newcommand{\lapl}{\upD}
+
+% Finite element
+\newcommand{\sumfe}{\sum_{\tau \in E(i)} \sum_{k \in \tau}}
+\newcommand{\sumcell}{\sum_{\tau \in E(i)}}
+
+% Redefinition (more compact)
+\newcommand{\veps}{\varepsilon}
+\newcommand{\eps}{\epsilon}
+\newcommand{\psc}{\scaleto{\partial}{5pt}}
+\newcommand{\mrm}{\mathrm}
+\newcommand{\mc}{\mathcal}
+\newcommand{\ta}{\theta}
+\newcommand{\tij}{t_{ij}}
+\newcommand{\phij}{\phi_{i, j}}
+\newcommand{\tS}{\tilde{S}}
+\newcommand{\tN}{\tilde{N}}
+\newcommand{\tR}{\tilde{R}}
+\newcommand{\tin}{\mathrm{in}}
+\newcommand{\out}{\mathrm{out}}
+
+% Misc (rather long formulas)
+\newcommand{\green}{G(\vb{x}, \vb{x}')}
+\newcommand{\cylgrad}[3]{\dfrac{\partial #1}{\partial r} + \dfrac{1}{r} \dfrac{\partial #2}{\partial \theta} + \dfrac{\partial #3}{\partial z}}
+\newcommand{\cyldiv}[3]{\dfrac{1}{r}\dfrac{\partial r #1}{\partial r} + \dfrac{1}{r} \dfrac{\partial #2}{\partial \theta} + \dfrac{\partial #3}{\partial z}}
+
+% Quantum mechanics
+\newcommand{\mean}[1]{\langle #1 \rangle}
+\newcommand{\wf}{\psi(\ve{r}, t)}
+\newcommand{\ham}{\hat{H}}
+\newcommand{\hA}{\hat{A}}
+\newcommand{\hB}{\hat{B}}
+\newcommand{\upd}{\mathrm{d}}
+\newcommand{\psia}{\psi_\alpha(\ve{r})}
+\newcommand{\kpsi}{\ket{\psi}}
+\newcommand{\bpsi}{\bra{\psi}}
+\newcommand{\kb}{\ket{n}}
+\newcommand{\knr}{\ket{n, r}}
+\newcommand{\kpsiz}{\ket{\psi^0}}
+\newcommand{\kpsio}{\ket{\psi^1}}
+\newcommand{\kpsit}{\ket{\psi^2}}
+\newcommand{\hv}[1]{\hat{\vb*{#1}}}
+\newcommand{\hvr}{\hat{\vb{r}}}
+\newcommand{\vp}{\vb*{p}}
+\newcommand{\hvp}{\hat{\vb*{p}}}
+\newcommand{\kpsin}{\ket{\psi_n}}
+\newcommand{\bpsin}{\bra{\psi_n}}
+\newcommand{\hO}{\hat{O}}
+
+% Statistical Physics and kinetic theory
+\newcommand{\Ni}{\mathcal{N}_i}
+\newcommand{\NN}{\mathcal{N}}
+\newcommand{\Qrot}{\mathcal{Q}^\text{rot}}
+\newcommand{\Q}{\mathcal{Q}}
+\newcommand{\evibsnv}{\epsilon_\text{s,nv}^\text{vib}}
+\newcommand{\erotsnv}{\epsilon_\text{s,nv}^\text{rot}}
+\newcommand{\evib}{\varepsilon_\text{vib}}
+\newcommand{\eR}{\varepsilon_R}
+\newcommand{\fastp}{\dot{E}^p_\text{fast}}
+\newcommand{\vibp}{\dot{E}^p_\text{vib}}
+\newcommand{\vfone}{\vb{f}_{1}}
+\newcommand{\di}{\mathrm{d}}
+\newcommand{\tA}{\mathrm{A}}
+\newcommand{\tBC}{\mathrm{BC}}
+\newcommand{\vib}{\text{vib}}
+\newcommand{\Ntwo}{\ce{N2}}
+\newcommand{\Otwo}{\ce{O2}}
+\newcommand{\qlpl}{\{q_l, p_l\}}
+\newcommand{\dqdp}{\prod_l dq_l dp_l}
+
+% Relaxation times
+\newcommand{\tautt}{\tau_\text{TT}}
+\newcommand{\taurt}{\tau_\text{RT}}
+\newcommand{\tauvt}{\tau_\text{VT}}
+\newcommand{\Erot}{E_\text{rot}}
+\newcommand{\Evib}{E_\text{vib}}
+
+% Metric related properties
+\newcommand{\dvi}{\partial V_i}
+\newcommand{\Sij}{\vb{S}_{i, j}^\tau}
+\newcommand{\Si}{\vb{S}_i^\tau}
+\newcommand{\pipe}[1]{\left. #1 \right\vert}
+
+% Units
+\newcommand{\ns}{\SI{}{\nano\second}}
+\newcommand{\mus}{\SI{}{\micro\second}}
+\newcommand{\ms}{\SI{}{\milli\second}}
+\newcommand{\kHz}{\SI{}{\kilo\hertz}}
+
+% Small partial in integrals
+\newcommand\ppartial{\scaleobj{0.7}{\partial}}
+
+% Differential
+\newcommand{\md}{\mrm{d}}
+
+% Environnement pour insérer une image en dehors des marges - bigcenter
+\makeatletter
+\newskip\@bigflushglue \@bigflushglue = -200pt plus 1fil
+\def\bigcenter{\trivlist \bigcentering\item\relax}
+\def\bigcentering{\let\\\@centercr\rightskip\@bigflushglue%
+	\leftskip\@bigflushglue
+	\parindent\z@\parfillskip\z@skip}
+\def\endbigcenter{\endtrivlist}
+
+\newcommand\highlight[1]{{\textcolor{red}{#1}}}
