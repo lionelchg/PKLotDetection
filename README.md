@@ -1,13 +1,13 @@
 # PKLotDetection repository
 
-This is a repository for classifying parking lot images as empty or occupied. The associated technical report can be found in `report.pdf`.
+This is a repository for classifying parking lot images as empty or occupied. The associated technical report can be found in `report.pdf` (in French).
 
 ## Overview of the repository
 
 The repository contains several directories:
 
 1. `code/`: this is the main code for running the training and get the results of the neural networks
-2. `latex/`: directory containing the LaTeX source files as well as the `main.pdf` report
+2. `latex/`: directory containing the LaTeX source files
 3. `pklotclass/`: Python library written and used in `code/` written using [PyTorch](https://pytorch.org) for the deep learning part.
 
 ## Structure of the `pklotclass/` library
