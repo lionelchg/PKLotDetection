@@ -1,6 +1,6 @@
 # PKLotDetection repository
 
-This is a repository for classifying parking lot images as empty or occupied. The associated technical report can be found in `report.pdf` (in French).
+This is a repository for classifying parking lot images as empty or occupied. The associated technical report can be found in `report.pdf` (in French). Implementation of the networks from [Deep learning for decentralized parking lot occupancy detection](https://doi.org/10.1016/j.eswa.2016.10.055) is carried out with some extended testing.
 
 ## Overview of the repository
 
@@ -41,7 +41,7 @@ entry_points={
 },
 ```
 
-Each of these executables are run via a configuration file written in `YAML` format (for example `code/results/200labels/simple.yml` for the `train_network` executable). These configuration files are converted into Python dictionnaries which are parsed throughout the code.
+Each of these executables are run via a configuration file written in `YAML` format (for example `code/malexnet_cnr.yml` for the `train_network` executable). These configuration files are converted into Python dictionnaries which are parsed throughout the code.
 
 To install the library you need Python 3.8 or above version. Run the following command at the root of the repository (preferably in a virtual environment):
 
