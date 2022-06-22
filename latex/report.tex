@@ -3,7 +3,7 @@
 % Head down to where it says "Start here"
 % --------------------------------------------------------------
 
-\title{Test Scientifique - Expertise Computer Vision - Quantmetry}
+\title{Classification de places de parking}
 \author{Lionel Cheng}
 \date{Juin 2022}
 
@@ -160,13 +160,9 @@ Le jeu de données suggéré dans l'énoncé, PKLot, a été publié en 2015 \ci
     \label{fig:pklot_individual}
 \end{figure}
 
-\textbf{Considérez-vous que la quantité de données à disposition est suffisante pour entraîner un algorithme d'apprentissage supervisé ?}
-
 Il y a environ 350 000 images par classe dans le jeu de données PKLot. Ce nombre semble largement suffisant lorsqu'on le compare à d'autres jeux de données d'images classiques tels que ImageNet LSVRC-2010 \citep{ILSVRC15} (1200 images par classe en moyenne), MNIST \citep{deng2012mnist} (700 images par classe), CIFAR-10 et CIFAR-100 \citep{Krizhevsky09learningmultiple} (6000 et 600 images par classe respectivement).
 
 Plus que la taille du jeu de données, sa qualité doit être un critère primordial pour entraîner un réseau de neurones. Si celui-ci est trop biaisé dans un sens (une seule position de voiture par exemple) ou si les exemples sont trop simples, le réseau aura du mal à généraliser ses résultats.
-
-\textbf{Quelle(s) solution(s) proposez-vous pour augmenter la taille du dataset, si nécessaire ?}
 
 Lorsque la taille du dataset n'est pas assez conséquente plusieurs techniques s'offrent à nous pour faire de \textbf{l'augmentation de données}. Ces opérations permettent d'éviter le sur-apprentissage (ou \textit{over-fitting} en anglais).
 
@@ -189,8 +185,6 @@ Des techniques plus avancées peuvent être utilisées tels que la génération 
 \end{figure}
 
 \section{Modélisation}
-
-\textbf{Quel modèle proposeriez-vous ? Quelle stratégie d'entraînement envisageriez vous ? Pourquoi ?}
 
 Face à cette tâche de classification d'images, nous nous orientons vers des réseaux de neurones profonds convolutionnels (\textit{deep CNN} en anglais pour Convolutional Neural Network). Ces méthodes sont en effet les meilleurs pour les tâches de classification d'images depuis l'avènement d'AlexNet \citep{alexnet}, le premier réseau de neurones à avoir remporté avec beaucoup de marge la compétition ImageNet Large Scale Visual Recognition Challenge en 2012, mentionné en première partie de ce document. L'architecture du réseau est montrée en Fig.~\ref{fig:alexnet}.
 
@@ -226,8 +220,6 @@ Tous ces réseaux suivent une logique similaire: en partant de l'image pixellis�
 \end{equation}
 
 \noindent où $N$ représente le batch-size et $x_{n, c}$ correspond à la dernière couche du réseau avant l'opération de Softmax qui est explicitée dans la fonction de coût ici.
-
-\textbf{Quelles métriques de performance / stratégies de validation sont envisageables pour évaluer le comportement de votre modèle ?}
 
 Dans cette tâche de classification binaire, la métrique de performance la plus évident est l'exactitude (ou \textit{accuracy} que l'on dénote $\mrm{ACC}$) en anglais qui est la proportion de places correctemment classifiées sur le nombre de places total. Pour définir d'autres métriques et comprendre un peu plus le comportement du réseau on fait appel à la matrice de confusion qui permet d'utiliser des grandeurs conditionnées. Celle-ci est montrée en anglais en Fig.~\ref{fig:confusion_matrix} pour garder des notations consistentes avec celles du code. Les images sont classées en 4 catégories: le nombre de vrais positif, vrais négatifs, faux positifs et faux négatifs. On considère ici le test positif lorsque la place est occupée. L'exactitude $\mrm{ACC}$ s'écrit alors:
 
@@ -331,9 +323,6 @@ L'exactitude ainsi que les différents métriques avancées des trois réseaux p
 
 Une fois le modèle développé et mis en production, on constate que ses performances sont moins bonnes que lors des tests effectués pendant sa phase de développement. Le principal facteur identifié est que les voitures blanches ne sont pas (ou mal) détectées lorsque le parking est recouvert de neige.
 
-\textbf{Quelle pourrait être la cause de ce défaut ? Proposez une démarche permettant de le résoudre et d'augmenter la performance du modèle dans ce type
-de situations.}
-
 La principale cause de ce défaut est l'absence d'images similaires dans le jeu de données d'entraînement qui n'est pas assez représentatif de la réalité. C'est la raison pour laquelle un nouveau jeu de données CNRPark-EXT est introduit dans le papier \citep{Amato2017} car le jeu de données PKLot \citep{deAlmeida2015} manque d'images de situations difficiles qui peuvent être rencontrées en réalité comme des occlusions et ombrages montrées en Fig.~\ref{fig:cnrpark_ext}. Il faut donc rajouter dans le jeu de données d'entraînement des images de places de parking enneigées.
 
 \begin{figure}[htbp]
@@ -359,9 +348,6 @@ le cadre du Grand Défi ”Sécuriser, certifier et fiabiliser les systèmes fon
 sur l'intelligence artificielle”. A ce titre, l'interprétabilité des modèles est une problématique de l'IA (et a fortiori de la Computer Vision) que Quantmetry
 propose de résoudre pour ses clients.
 
-\textbf{Quelle(s) solution(s) proposeriez-vous pour interpréter vos résultats ? pour ajouter une évaluation de l'incertitude des prédictions de l'algorithme
-développé ? Quels seraient leurs avantages et limites ?}
-
 Bien que les réseaux de neurones profonds ont montré des résultats impressionants sur de nombreuses tâches, leur interprétabilité est complexe en raison du très grand nombre de paramètres en jeu. Dans de nombreux cas, ces réseaux sont utilisés comme des boîtes noires ce qui peut engendrer beaucoup de risque. L'interprétabilité n'est pas un concept monolithique et englobe plusieurs aspects définis dans \cite{Chakraborty2017}:
 
 \begin{itemize}
@@ -376,14 +362,6 @@ Ces dernières années, de nombreuses méthodes pour expliquer ce qui se passe �
     \item Diagnostic des représentations: trouver une explication sémantique à chaque couche utilisée ou encore extraire des zones d'images qui contributent le plus à la sortie du réseau
     \item Désintriquer les représentations de CNNs en créant des représentations en graphes des zones que le réseau "regarde".
 \end{itemize}
-
-\section{Frugalité}
-
-\textbf{Quelles démarches proposeriez-vous pour optimiser les besoins en ressources de votre solution ?}
-
-La démarche proposée dans \cite{Amato2017} d'utiliser un réseau adapté à la complexité du problème donne des pistes pour optimiser les besoins en ressources d'un CNN par rapport à un problème: réduire d'un facteur 1000 le nombre de paramètres n'a pas changé significativement la performance du réseau pour prédire l'occupation des places de parking mais l'empreinte mémoire et la rapidité du réseau ont été grandement augmentés. On pourrait éventuellement pousser la réduction du nombre de paramètres pour voir son impact sur l'exactitude de la prédiction.
-
-Si le réseau que l'on utilise est fixé, il faut regarder si certaines parties du code sont sous-optimisés et prennent beaucoup de temps: pour cela profiler le code est nécessaire pour savoir où sont les parties à améliorer.
 
 \clearpage
 
